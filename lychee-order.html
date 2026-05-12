@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>鲜荔直订 · 岭南荔枝</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: #FFF7F0; color: #2C2C2A; min-height: 100vh;
+    }
+    .site-header {
+      background: #fff; border-bottom: 0.5px solid #e8e0d4;
+      padding: 0 24px; height: 60px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-icon {
+      width: 32px; height: 32px; background: #D85A30; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 18px; font-weight: 500;
+    }
+    .logo-text { font-size: 17px; font-weight: 500; color: #2C2C2A; }
+    .logo-sub { font-size: 12px; color: #888780; }
+    .header-actions { display: flex; align-items: center; gap: 10px; }
+    .profile-btn, .cart-btn {
+      position: relative; background: #fff; border-radius: 8px;
+      padding: 7px 14px; font-size: 13px; cursor: pointer;
+      display: flex; align-items: center; gap: 6px; transition: background 0.15s;
+    }
+    .profile-btn { border: 0.5px solid #D3D1C7; color: #5F5E5A; }
+    .profile-btn:hover { background: #F1EFE8; }
+    .profile-btn.filled { border-color: #3B6D11; color: #3B6D11; background: #EAF3DE; }
+    .cart-btn { border: 0.5px solid #D85A30; color: #D85A30; }
+    .cart-btn:hover { background: #FFF0E8; }
+    .cart-badge {
+      position: absolute; top: -6px; right: -6px;
+      background: #D85A30; color: #fff; border-radius: 9px;
+      font-size: 11px; min-width: 18px; height: 18px;
+      display: flex; align-items: center; justify-content: center; padding: 0 4px;
+    }
+    .hero {
+      background: linear-gradient(135deg, #993C1D 0%, #D85A30 50%, #EF9F27 100%);
+      color: #fff; text-align: center; padding: 48px 24px 40px;
+    }
+    .hero-tag {
+      display: inline-block; background: rgba(255,255,255,0.2);
+      border-radius: 20px; padding: 4px 14px; font-size: 12px; margin-bottom: 16px;
+    }
+    .hero h1 { font-size: 28px; font-weight: 500; margin-bottom: 8px; letter-spacing: 0.5px; }
+    .hero p { font-size: 14px; opacity: 0.85; }
+    .section-title { font-size: 15px; font-weight: 500; color: #2C2C2A; padding: 28px 24px 16px; }
+    .product-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px; padding: 0 24px 24px; max-width: 1100px; margin: 0 auto;
+    }
+    .product-card {
+      background: #fff; border-radius: 16px; border: 0.5px solid #e8e0d4;
+      overflow: hidden; display: flex; flex-direction: column;
+    }
+    .card-visual {
+      height: 200px; display: flex; align-items: center;
+      justify-content: center; position: relative; overflow: hidden;
+    }
+    .card-visual.guiwei { background: #F5C4B3; }
+    .card-visual.nuomici { background: #FAC775; }
+    .card-visual.xianjinfeng { background: #C0DD97; }
+    .card-badge {
+      position: absolute; top: 12px; right: 12px;
+      background: #D85A30; color: #fff; font-size: 11px;
+      padding: 3px 8px; border-radius: 20px; z-index: 2;
+    }
+    .card-badge.premium { background: #993C1D; }
+    .card-badge.new { background: #3B6D11; }
+    .card-body { padding: 16px 18px; flex: 1; display: flex; flex-direction: column; }
+    .card-name { font-size: 18px; font-weight: 500; color: #2C2C2A; margin-bottom: 4px; }
+    .card-en { font-size: 12px; color: #888780; margin-bottom: 12px; }
+    .tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+    .tag { background: #FAEEDA; color: #854F0B; font-size: 11px; padding: 2px 8px; border-radius: 20px; }
+    .tag.green { background: #EAF3DE; color: #3B6D11; }
+    .card-desc { font-size: 13px; color: #5F5E5A; line-height: 1.7; margin-bottom: 14px; flex: 1; }
+    .price-row { display: flex; align-items: baseline; gap: 6px; margin-bottom: 14px; }
+    .price-main { font-size: 22px; font-weight: 500; color: #D85A30; }
+    .price-unit { font-size: 13px; color: #888780; }
+    .price-original { font-size: 12px; color: #B4B2A9; text-decoration: line-through; }
+    .qty-section { background: #FFF7F0; border-radius: 10px; padding: 12px 14px; margin-bottom: 14px; }
+    .qty-label { font-size: 12px; color: #5F5E5A; margin-bottom: 10px; }
+    .qty-presets { display: flex; gap: 6px; flex-wrap: wrap; }
+    .qty-preset-btn {
+      background: #fff; border: 0.5px solid #D3D1C7; border-radius: 6px;
+      padding: 4px 10px; font-size: 12px; color: #5F5E5A; cursor: pointer; transition: all 0.15s;
+    }
+    .qty-preset-btn:hover, .qty-preset-btn.active {
+      border-color: #D85A30; color: #D85A30; background: #FFF0E8;
+    }
+    .qty-custom { display: flex; align-items: center; gap: 6px; margin-top: 8px; }
+    .qty-custom label { font-size: 12px; color: #5F5E5A; }
+    .qty-stepper {
+      display: flex; align-items: center;
+      border: 0.5px solid #D3D1C7; border-radius: 6px; overflow: hidden;
+    }
+    .qty-stepper button {
+      width: 28px; height: 28px; background: #fff; border: none; cursor: pointer;
+      font-size: 16px; color: #5F5E5A; display: flex; align-items: center; justify-content: center;
+      transition: background 0.1s;
+    }
+    .qty-stepper button:hover { background: #FFF0E8; color: #D85A30; }
+    .qty-stepper input {
+      width: 44px; height: 28px; border: none;
+      border-left: 0.5px solid #D3D1C7; border-right: 0.5px solid #D3D1C7;
+      text-align: center; font-size: 13px; color: #2C2C2A; background: #fff; outline: none;
+    }
+    .qty-display { font-size: 12px; color: #D85A30; font-weight: 500; margin-top: 6px; }
+    .add-cart-btn {
+      width: 100%; background: #D85A30; color: #fff; border: none;
+      border-radius: 10px; padding: 11px; font-size: 14px; font-weight: 500;
+      cursor: pointer; transition: background 0.15s;
+    }
+    .add-cart-btn:hover { background: #993C1D; }
+    .add-cart-btn:active { transform: scale(0.98); }
+    .features {
+      max-width: 1100px; margin: 0 auto; padding: 0 24px 32px;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;
+    }
+    .feature-card {
+      background: #fff; border-radius: 12px; border: 0.5px solid #e8e0d4;
+      padding: 16px; display: flex; align-items: flex-start; gap: 12px;
+    }
+    .feature-icon { font-size: 22px; flex-shrink: 0; }
+    .feature-title { font-size: 13px; font-weight: 500; color: #2C2C2A; margin-bottom: 3px; }
+    .feature-desc { font-size: 12px; color: #888780; line-height: 1.5; }
+
+    /* ── Modals ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.35); z-index: 200;
+      align-items: flex-end; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: #fff; border-radius: 20px 20px 0 0;
+      width: 100%; max-width: 600px; max-height: 90vh;
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    .modal-header {
+      padding: 16px 20px 12px; border-bottom: 0.5px solid #e8e0d4;
+      display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+    }
+    .modal-title { font-size: 16px; font-weight: 500; }
+    .modal-close {
+      background: #F1EFE8; border: none; border-radius: 50%;
+      width: 28px; height: 28px; cursor: pointer; font-size: 14px; color: #5F5E5A;
+    }
+    .modal-body { flex: 1; overflow-y: auto; padding: 16px 20px; }
+    .modal-footer { padding: 14px 20px; border-top: 0.5px solid #e8e0d4; flex-shrink: 0; }
+
+    /* Profile form */
+    .form-group { margin-bottom: 14px; }
+    .form-label { font-size: 12px; color: #5F5E5A; margin-bottom: 6px; display: block; }
+    .form-label span { color: #E24B4A; margin-left: 2px; }
+    .form-input {
+      width: 100%; border: 0.5px solid #D3D1C7; border-radius: 8px;
+      padding: 9px 12px; font-size: 14px; color: #2C2C2A; outline: none;
+      transition: border-color 0.15s; background: #fff; font-family: inherit;
+    }
+    .form-input:focus { border-color: #D85A30; }
+    .form-input.error { border-color: #E24B4A; }
+    .form-error { font-size: 11px; color: #E24B4A; margin-top: 4px; display: none; }
+    .form-error.show { display: block; }
+    .save-profile-btn {
+      width: 100%; background: #D85A30; color: #fff; border: none;
+      border-radius: 10px; padding: 12px; font-size: 14px; font-weight: 500;
+      cursor: pointer; transition: background 0.15s;
+    }
+    .save-profile-btn:hover { background: #993C1D; }
+    .profile-saved-tip {
+      font-size: 12px; color: #3B6D11; margin-top: 8px; text-align: center; display: none;
+    }
+    .profile-saved-tip.show { display: block; }
+
+    /* Cart */
+    .cart-empty { text-align: center; padding: 40px 0; color: #888780; font-size: 14px; }
+    .cart-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 0; border-bottom: 0.5px solid #F1EFE8;
+    }
+    .cart-item-thumb {
+      width: 40px; height: 40px; border-radius: 8px; overflow: hidden; flex-shrink: 0;
+    }
+    .cart-item-info { flex: 1; }
+    .cart-item-name { font-size: 14px; font-weight: 500; }
+    .cart-item-meta { font-size: 12px; color: #888780; }
+    .cart-item-price { font-size: 14px; font-weight: 500; color: #D85A30; }
+    .cart-item-remove {
+      background: none; border: none; color: #B4B2A9; cursor: pointer; font-size: 16px; padding: 4px;
+    }
+    .cart-item-remove:hover { color: #E24B4A; }
+    .receiver-info {
+      background: #EAF3DE; border-radius: 8px; padding: 10px 12px; margin-bottom: 12px;
+      font-size: 12px; color: #3B6D11; display: none;
+    }
+    .receiver-info.show { display: block; }
+    .receiver-info strong { font-weight: 500; }
+    .no-receiver-tip {
+      background: #FAEEDA; border-radius: 8px; padding: 10px 12px; margin-bottom: 12px;
+      font-size: 12px; color: #854F0B; cursor: pointer;
+    }
+    .no-receiver-tip a { color: #D85A30; text-decoration: underline; }
+    .cart-summary {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
+    }
+    .cart-total-label { font-size: 14px; color: #5F5E5A; }
+    .cart-total-price { font-size: 20px; font-weight: 500; color: #D85A30; }
+    .checkout-btn {
+      width: 100%; background: #D85A30; color: #fff; border: none;
+      border-radius: 10px; padding: 13px; font-size: 15px; font-weight: 500;
+      cursor: pointer; transition: background 0.15s;
+    }
+    .checkout-btn:hover { background: #993C1D; }
+    .checkout-btn:disabled { background: #D3D1C7; cursor: not-allowed; }
+
+    /* Order confirm modal */
+    .order-confirm { text-align: center; padding: 8px 0; }
+    .order-icon { font-size: 48px; margin-bottom: 12px; }
+    .order-confirm h3 { font-size: 17px; font-weight: 500; margin-bottom: 8px; }
+    .order-confirm p { font-size: 13px; color: #5F5E5A; line-height: 1.7; }
+    .order-detail {
+      background: #FFF7F0; border-radius: 10px; padding: 12px 14px;
+      margin: 14px 0; text-align: left;
+    }
+    .order-detail-row {
+      display: flex; justify-content: space-between; font-size: 13px;
+      padding: 3px 0; color: #5F5E5A;
+    }
+    .order-detail-row strong { color: #2C2C2A; font-weight: 500; }
+    .order-total-row {
+      display: flex; justify-content: space-between; font-size: 15px;
+      padding: 8px 0 0; margin-top: 4px; border-top: 0.5px solid #e8e0d4; font-weight: 500;
+    }
+    .order-total-row span:last-child { color: #D85A30; }
+    .wxwork-tip {
+      background: #E6F1FB; border-radius: 8px; padding: 10px 12px;
+      font-size: 12px; color: #185FA5; margin-top: 8px; text-align: left;
+    }
+    .submit-order-btn {
+      width: 100%; background: #D85A30; color: #fff; border: none;
+      border-radius: 10px; padding: 13px; font-size: 15px; font-weight: 500;
+      cursor: pointer; transition: background 0.15s; margin-top: 12px;
+    }
+    .submit-order-btn:hover { background: #993C1D; }
+    .submit-order-btn:disabled { background: #D3D1C7; cursor: not-allowed; }
+    .submitting-tip { font-size: 12px; color: #888780; text-align: center; margin-top: 8px; display: none; }
+    .submitting-tip.show { display: block; }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #3B6D11; color: #fff; padding: 10px 20px;
+      border-radius: 20px; font-size: 13px; z-index: 500;
+      transition: transform 0.3s; white-space: nowrap;
+    }
+    .toast.error-toast { background: #A32D2D; }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* Config notice */
+    .config-notice {
+      background: #E6F1FB; border: 0.5px solid #B5D4F4; border-radius: 10px;
+      padding: 14px 16px; margin: 0 24px 20px; max-width: 1052px;
+      display: flex; gap: 10px; align-items: flex-start;
+    }
+    .config-notice-icon { font-size: 18px; flex-shrink: 0; }
+    .config-notice p { font-size: 12px; color: #185FA5; line-height: 1.7; }
+    .config-notice code {
+      background: rgba(24,95,165,0.1); padding: 1px 5px; border-radius: 4px;
+      font-family: monospace; font-size: 11px;
+    }
+
+    @media (max-width: 480px) {
+      .hero h1 { font-size: 22px; }
+      .product-grid { grid-template-columns: 1fr; padding: 0 16px 24px; }
+      .section-title { padding: 20px 16px 12px; }
+      .features { padding: 0 16px 24px; }
+      .config-notice { margin: 0 16px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Config reminder (show until keys are set) ── -->
+<div class="config-notice" id="configNotice">
+  <div class="config-notice-icon">&#9881;</div>
+  <p>
+    <strong>管理员配置提示：</strong>使用前请在页面底部 <code>&lt;script&gt;</code> 中填写：<br>
+    ① <code>SERVERCHAN_SENDKEY</code> Server酱 SendKey（微信通知，访问 sct.ftqq.com 获取）&nbsp;&nbsp;
+    ② <code>FEISHU_WEBHOOK</code> 飞书多维表格自动化 Webhook 地址（可选）<br>
+    填写完毕后可删除此提示条。
+  </p>
+</div>
+
+<!-- Header -->
+<header class="site-header">
+  <div class="logo">
+    <div class="logo-icon">荔</div>
+    <div>
+      <div class="logo-text">鲜荔直订</div>
+      <div class="logo-sub">岭南鲜果·当日采摘</div>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button class="profile-btn" id="profileBtn" onclick="openProfile()">
+      <span>&#128100;</span> <span id="profileBtnLabel">收件信息</span>
+    </button>
+    <button class="cart-btn" onclick="openCart()">
+      <span>&#128717;</span> 购物车
+      <span class="cart-badge" id="cartBadge" style="display:none">0</span>
+    </button>
+  </div>
+</header>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-tag">2026 夏季新鲜上市</div>
+  <h1>岭南三大名种荔枝</h1>
+  <p>桂味 · 糯米糍 · 仙进奉 &nbsp;|&nbsp; 产地直发 · 顺丰冷链</p>
+</div>
+
+<!-- Products -->
+<div class="section-title">选择品种</div>
+<div class="product-grid">
+
+  <!-- 桂味 -->
+  <div class="product-card">
+    <div class="card-visual guiwei">
+      <span class="card-badge">爆款</span>
+      <svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- 枝叶 -->
+        <path d="M90 30 Q100 20 115 25 Q108 35 95 38 Z" fill="#3B6D11" opacity="0.8"/>
+        <path d="M90 30 Q80 18 65 22 Q72 33 87 36 Z" fill="#3B6D11" opacity="0.7"/>
+        <path d="M90 30 C90 30 92 22 90 15 C88 22 90 30 90 30Z" fill="#5F5E5A" stroke="#3B6D11" stroke-width="1.5"/>
+        <!-- 主果 -->
+        <ellipse cx="90" cy="105" rx="38" ry="40" fill="#D85A30"/>
+        <ellipse cx="90" cy="105" rx="38" ry="40" fill="url(#gw1)" opacity="0.5"/>
+        <!-- 果皮纹理小突起 -->
+        <circle cx="72" cy="90" r="3" fill="#BA7517" opacity="0.5"/>
+        <circle cx="85" cy="82" r="2.5" fill="#BA7517" opacity="0.45"/>
+        <circle cx="98" cy="85" r="3" fill="#BA7517" opacity="0.5"/>
+        <circle cx="108" cy="95" r="2.5" fill="#BA7517" opacity="0.45"/>
+        <circle cx="106" cy="110" r="3" fill="#BA7517" opacity="0.4"/>
+        <circle cx="95" cy="120" r="2.5" fill="#BA7517" opacity="0.4"/>
+        <circle cx="80" cy="118" r="3" fill="#BA7517" opacity="0.45"/>
+        <circle cx="70" cy="108" r="2.5" fill="#BA7517" opacity="0.4"/>
+        <circle cx="75" cy="100" r="2" fill="#EF9F27" opacity="0.35"/>
+        <circle cx="100" cy="100" r="2" fill="#EF9F27" opacity="0.35"/>
+        <!-- 高光 -->
+        <ellipse cx="80" cy="88" rx="12" ry="8" fill="#fff" opacity="0.18"/>
+        <!-- 小果 -->
+        <ellipse cx="118" cy="88" rx="22" ry="24" fill="#993C1D"/>
+        <ellipse cx="118" cy="88" rx="22" ry="24" fill="url(#gw2)" opacity="0.4"/>
+        <circle cx="112" cy="78" r="2" fill="#BA7517" opacity="0.45"/>
+        <circle cx="122" cy="82" r="2" fill="#BA7517" opacity="0.4"/>
+        <circle cx="126" cy="92" r="2" fill="#BA7517" opacity="0.4"/>
+        <ellipse cx="113" cy="79" rx="7" ry="4" fill="#fff" opacity="0.15"/>
+        <defs>
+          <radialGradient id="gw1" cx="40%" cy="35%" r="55%">
+            <stop offset="0%" stop-color="#fff"/>
+            <stop offset="100%" stop-color="#993C1D"/>
+          </radialGradient>
+          <radialGradient id="gw2" cx="40%" cy="35%" r="55%">
+            <stop offset="0%" stop-color="#fff"/>
+            <stop offset="100%" stop-color="#712B13"/>
+          </radialGradient>
+        </defs>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-name">桂味</div>
+      <div class="card-en">Guiwei Lychee · 桂味荔枝</div>
+      <div class="tag-row">
+        <span class="tag">清甜爽口</span>
+        <span class="tag">桂花香</span>
+        <span class="tag green">应季首选</span>
+      </div>
+      <p class="card-desc">
+        桂味因带有桂花香气而得名，是荔枝中的经典品种。果皮薄、果肉厚，汁水充沛，甜度高而不腻，有淡雅桂花余香，深受消费者喜爱。
+      </p>
+      <div class="price-row">
+        <span class="price-main">¥49</span>
+        <span class="price-unit">/ 斤</span>
+        <span class="price-original">¥68</span>
+      </div>
+      <div class="qty-section">
+        <div class="qty-label">选择斤数（最少 5 斤）</div>
+        <div class="qty-presets">
+          <button class="qty-preset-btn active" onclick="selectPreset(this,'guiwei',5)">5斤</button>
+          <button class="qty-preset-btn" onclick="selectPreset(this,'guiwei',10)">10斤</button>
+        </div>
+        <div class="qty-custom">
+          <label>自定义</label>
+          <div class="qty-stepper">
+            <button onclick="changeQty('guiwei',-1)">−</button>
+            <input type="number" id="qty-guiwei" value="5" min="5" max="99" oninput="onQtyInput('guiwei')">
+            <button onclick="changeQty('guiwei',1)">+</button>
+          </div>
+        </div>
+        <div class="qty-display" id="subtotal-guiwei">小计：¥245.00</div>
+      </div>
+      <button class="add-cart-btn" onclick="addToCart('guiwei','桂味',49,'guiwei')">加入购物车</button>
+    </div>
+  </div>
+
+  <!-- 糯米糍 -->
+  <div class="product-card">
+    <div class="card-visual nuomici">
+      <span class="card-badge premium">匠心</span>
+      <svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- 枝叶 -->
+        <path d="M90 28 Q102 17 118 22 Q110 34 96 37 Z" fill="#27500A" opacity="0.85"/>
+        <path d="M90 28 Q78 16 62 20 Q70 32 86 35 Z" fill="#27500A" opacity="0.75"/>
+        <path d="M90 28 C90 28 93 20 90 12 C87 20 90 28 90 28Z" fill="#444441" stroke="#27500A" stroke-width="1.5"/>
+        <!-- 主果（糯米糍果形更圆） -->
+        <circle cx="88" cy="108" r="42" fill="#BA7517"/>
+        <circle cx="88" cy="108" r="42" fill="url(#nm1)" opacity="0.55"/>
+        <!-- 粗糙鳞片纹 -->
+        <circle cx="70" cy="92" r="4" fill="#854F0B" opacity="0.5"/>
+        <circle cx="84" cy="83" r="3.5" fill="#854F0B" opacity="0.45"/>
+        <circle cx="99" cy="87" r="4" fill="#854F0B" opacity="0.5"/>
+        <circle cx="110" cy="97" r="3.5" fill="#854F0B" opacity="0.45"/>
+        <circle cx="112" cy="113" r="4" fill="#854F0B" opacity="0.4"/>
+        <circle cx="100" cy="125" r="3.5" fill="#854F0B" opacity="0.4"/>
+        <circle cx="83" cy="128" r="4" fill="#854F0B" opacity="0.45"/>
+        <circle cx="70" cy="118" r="3.5" fill="#854F0B" opacity="0.45"/>
+        <circle cx="66" cy="105" r="3" fill="#854F0B" opacity="0.4"/>
+        <circle cx="75" cy="80" r="2.5" fill="#EF9F27" opacity="0.3"/>
+        <!-- 高光 -->
+        <ellipse cx="77" cy="90" rx="14" ry="9" fill="#fff" opacity="0.2"/>
+        <!-- 小果 -->
+        <circle cx="122" cy="85" r="25" fill="#993C1D"/>
+        <circle cx="122" cy="85" r="25" fill="url(#nm2)" opacity="0.45"/>
+        <circle cx="113" cy="74" r="2.5" fill="#712B13" opacity="0.5"/>
+        <circle cx="124" cy="78" r="2.5" fill="#712B13" opacity="0.45"/>
+        <circle cx="130" cy="88" r="2.5" fill="#712B13" opacity="0.4"/>
+        <ellipse cx="114" cy="76" rx="8" ry="5" fill="#fff" opacity="0.15"/>
+        <defs>
+          <radialGradient id="nm1" cx="38%" cy="33%" r="58%">
+            <stop offset="0%" stop-color="#fff"/>
+            <stop offset="100%" stop-color="#633806"/>
+          </radialGradient>
+          <radialGradient id="nm2" cx="38%" cy="33%" r="55%">
+            <stop offset="0%" stop-color="#fff"/>
+            <stop offset="100%" stop-color="#4A1B0C"/>
+          </radialGradient>
+        </defs>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-name">糯米糍</div>
+      <div class="card-en">Nuomici Lychee · 糯米糍荔枝</div>
+      <div class="tag-row">
+        <span class="tag">糯香浓郁</span>
+        <span class="tag">焦核率高</span>
+        <span class="tag green">品质之选</span>
+      </div>
+      <p class="card-desc">
+        糯米糍是广东荔枝的顶级品种，肉质软糯细腻，犹如糯米糍般绵软，极具粘性。焦核率极高，含糖量丰富，被誉为"荔枝皇后"。
+      </p>
+      <div class="price-row">
+        <span class="price-main">¥68</span>
+        <span class="price-unit">/ 斤</span>
+        <span class="price-original">¥98</span>
+      </div>
+      <div class="qty-section">
+        <div class="qty-label">选择斤数（最少 5 斤）</div>
+        <div class="qty-presets">
+          <button class="qty-preset-btn active" onclick="selectPreset(this,'nuomici',5)">5斤</button>
+          <button class="qty-preset-btn" onclick="selectPreset(this,'nuomici',10)">10斤</button>
+        </div>
+        <div class="qty-custom">
+          <label>自定义</label>
+          <div class="qty-stepper">
+            <button onclick="changeQty('nuomici',-1)">−</button>
+            <input type="number" id="qty-nuomici" value="5" min="5" max="99" oninput="onQtyInput('nuomici')">
+            <button onclick="changeQty('nuomici',1)">+</button>
+          </div>
+        </div>
+        <div class="qty-display" id="subtotal-nuomici">小计：¥340.00</div>
+      </div>
+      <button class="add-cart-btn" onclick="addToCart('nuomici','糯米糍',68,'nuomici')">加入购物车</button>
+    </div>
+  </div>
+
+  <!-- 仙进奉 -->
+  <div class="product-card">
+    <div class="card-visual xianjinfeng">
+      <span class="card-badge new">新贵</span>
+      <svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- 枝叶（仙进奉果串多，多叶） -->
+        <path d="M88 26 Q100 14 118 19 Q109 31 94 34 Z" fill="#3B6D11" opacity="0.9"/>
+        <path d="M88 26 Q76 13 58 18 Q67 30 83 33 Z" fill="#3B6D11" opacity="0.8"/>
+        <path d="M88 26 Q96 15 105 10 Q100 22 92 28 Z" fill="#27500A" opacity="0.7"/>
+        <path d="M88 26 C88 26 91 17 88 10 C85 17 88 26 88 26Z" fill="#444441" stroke="#3B6D11" stroke-width="1.5"/>
+        <!-- 主果（仙进奉颜色偏红绿，形略长） -->
+        <ellipse cx="86" cy="108" rx="36" ry="42" fill="#D85A30"/>
+        <ellipse cx="86" cy="108" rx="36" ry="42" fill="url(#xj1)" opacity="0.5"/>
+        <!-- 仙进奉果皮有些偏绿红混色 -->
+        <ellipse cx="86" cy="90" rx="28" ry="15" fill="#BA7517" opacity="0.2"/>
+        <!-- 鳞片 -->
+        <circle cx="70" cy="95" r="3.5" fill="#993C1D" opacity="0.5"/>
+        <circle cx="83" cy="86" r="3" fill="#993C1D" opacity="0.45"/>
+        <circle cx="97" cy="90" r="3.5" fill="#993C1D" opacity="0.5"/>
+        <circle cx="107" cy="101" r="3" fill="#993C1D" opacity="0.45"/>
+        <circle cx="108" cy="116" r="3.5" fill="#993C1D" opacity="0.4"/>
+        <circle cx="97" cy="128" r="3" fill="#993C1D" opacity="0.4"/>
+        <circle cx="82" cy="131" r="3.5" fill="#993C1D" opacity="0.45"/>
+        <circle cx="70" cy="120" r="3" fill="#993C1D" opacity="0.45"/>
+        <circle cx="65" cy="106" r="3" fill="#993C1D" opacity="0.4"/>
+        <!-- 高光 -->
+        <ellipse cx="76" cy="92" rx="13" ry="8" fill="#fff" opacity="0.2"/>
+        <!-- 右上小果 -->
+        <ellipse cx="116" cy="82" rx="21" ry="25" fill="#BA7517"/>
+        <ellipse cx="116" cy="82" rx="21" ry="25" fill="url(#xj2)" opacity="0.4"/>
+        <circle cx="109" cy="72" r="2" fill="#854F0B" opacity="0.45"/>
+        <circle cx="119" cy="76" r="2" fill="#854F0B" opacity="0.4"/>
+        <circle cx="124" cy="86" r="2" fill="#854F0B" opacity="0.4"/>
+        <ellipse cx="110" cy="73" rx="7" ry="4" fill="#fff" opacity="0.15"/>
+        <!-- 左下小果 -->
+        <ellipse cx="62" cy="130" rx="18" ry="20" fill="#993C1D"/>
+        <ellipse cx="62" cy="130" rx="18" ry="20" fill="url(#xj3)" opacity="0.4"/>
+        <circle cx="56" cy="122" r="1.5" fill="#712B13" opacity="0.4"/>
+        <ellipse cx="56" cy="122" rx="5" ry="3" fill="#fff" opacity="0.12"/>
+        <defs>
+          <radialGradient id="xj1" cx="38%" cy="32%" r="58%">
+            <stop offset="0%" stop-color="#fff"/>
+            <stop offset="100%" stop-color="#712B13"/>
+          </radialGradient>
+          <radialGradient id="xj2" cx="38%" cy="33%" r="55%">
+            <stop offset="0%" stop-color="#fff"/>
+            <stop offset="100%" stop-color="#633806"/>
+          </radialGradient>
+          <radialGradient id="xj3" cx="38%" cy="33%" r="55%">
+            <stop offset="0%" stop-color="#fff"/>
+            <stop offset="100%" stop-color="#4A1B0C"/>
+          </radialGradient>
+        </defs>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-name">仙进奉</div>
+      <div class="card-en">Xianjinfeng Lychee · 仙进奉荔枝</div>
+      <div class="tag-row">
+        <span class="tag">晚熟品种</span>
+        <span class="tag">蜜甜低酸</span>
+        <span class="tag green">新生代爆款</span>
+      </div>
+      <p class="card-desc">
+        仙进奉产自广州增城，是近年备受追捧的晚熟品种，成熟期可延至7-8月。果肉爽脆，蜜甜而几乎无酸，保存时间较长，非常适合快递配送。
+      </p>
+      <div class="price-row">
+        <span class="price-main">¥58</span>
+        <span class="price-unit">/ 斤</span>
+        <span class="price-original">¥85</span>
+      </div>
+      <div class="qty-section">
+        <div class="qty-label">选择斤数（最少 5 斤）</div>
+        <div class="qty-presets">
+          <button class="qty-preset-btn active" onclick="selectPreset(this,'xianjinfeng',5)">5斤</button>
+          <button class="qty-preset-btn" onclick="selectPreset(this,'xianjinfeng',10)">10斤</button>
+        </div>
+        <div class="qty-custom">
+          <label>自定义</label>
+          <div class="qty-stepper">
+            <button onclick="changeQty('xianjinfeng',-1)">−</button>
+            <input type="number" id="qty-xianjinfeng" value="5" min="5" max="99" oninput="onQtyInput('xianjinfeng')">
+            <button onclick="changeQty('xianjinfeng',1)">+</button>
+          </div>
+        </div>
+        <div class="qty-display" id="subtotal-xianjinfeng">小计：¥290.00</div>
+      </div>
+      <button class="add-cart-btn" onclick="addToCart('xianjinfeng','仙进奉',58,'xianjinfeng')">加入购物车</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- Features -->
+<div class="section-title" style="max-width:1100px;margin:0 auto;">服务保障</div>
+<div class="features">
+  <div class="feature-card">
+    <div class="feature-icon">&#10024;</div>
+    <div>
+      <div class="feature-title">产地直发</div>
+      <div class="feature-desc">广东增城、从化当日采摘，不经中间商直达您手</div>
+    </div>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">&#10052;</div>
+    <div>
+      <div class="feature-title">顺丰冷链</div>
+      <div class="feature-desc">全程 4°C 冷链运输，保鲜保质，48h 送达</div>
+    </div>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">&#9989;</div>
+    <div>
+      <div class="feature-title">品质保障</div>
+      <div class="feature-desc">收货不满意，7天内联系客服无忧退换</div>
+    </div>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">&#128722;</div>
+    <div>
+      <div class="feature-title">混搭下单</div>
+      <div class="feature-desc">多品种可以同时加入购物车，满足不同口味需求</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Profile Modal ── -->
+<div class="modal-overlay" id="profileModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">收件人信息</span>
+      <button class="modal-close" onclick="closeProfile()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">收件人姓名<span>*</span></label>
+        <input type="text" id="fieldName" class="form-input" placeholder="请输入真实姓名">
+        <div class="form-error" id="errName">请填写收件人姓名</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">手机号码<span>*</span></label>
+        <input type="tel" id="fieldPhone" class="form-input" placeholder="请输入11位手机号">
+        <div class="form-error" id="errPhone">请填写正确的手机号码</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">收件地址<span>*</span></label>
+        <input type="text" id="fieldAddr1" class="form-input" placeholder="省 / 市 / 区" style="margin-bottom:8px">
+        <input type="text" id="fieldAddr2" class="form-input" placeholder="详细地址（街道、楼号、门牌等）">
+        <div class="form-error" id="errAddr">请填写完整收件地址</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">备注（选填）</label>
+        <input type="text" id="fieldRemark" class="form-input" placeholder="如：放门卫、指定送货时间等">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="save-profile-btn" onclick="saveProfile()">保存收件信息</button>
+      <div class="profile-saved-tip" id="profileSavedTip">&#10003; 已保存，下次打开自动填入</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Cart Modal ── -->
+<div class="modal-overlay" id="cartModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">购物车</span>
+      <button class="modal-close" onclick="closeCart()">✕</button>
+    </div>
+    <div class="modal-body" id="cartBody">
+      <div class="cart-empty">购物车还是空的，快去选购吧～</div>
+    </div>
+    <div class="modal-footer">
+      <div class="cart-summary">
+        <span class="cart-total-label">合计</span>
+        <span class="cart-total-price" id="cartTotal">¥0.00</span>
+      </div>
+      <button class="checkout-btn" id="checkoutBtn" onclick="openOrderConfirm()">去结算</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Order Confirm Modal ── -->
+<div class="modal-overlay" id="orderModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">确认订单</span>
+      <button class="modal-close" onclick="closeOrderModal()">✕</button>
+    </div>
+    <div class="modal-body" id="orderBody"></div>
+    <div class="modal-footer">
+      <button class="submit-order-btn" id="submitOrderBtn" onclick="submitOrder()">确认下单</button>
+      <div class="submitting-tip" id="submittingTip">&#128336; 正在提交订单，请稍候…</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── 微信支付弹窗 ── -->
+<div class="modal-overlay" id="payModal">
+  <div class="modal" style="max-width:380px">
+    <div class="modal-header">
+      <span class="modal-title">微信支付</span>
+      <button class="modal-close" onclick="closePayModal()">✕</button>
+    </div>
+    <div class="modal-body" style="text-align:center;padding:24px 20px">
+      <div style="font-size:14px;color:#2C2C2A;margin-bottom:4px;font-weight:500">订单已提交，请扫码支付</div>
+      <div style="font-size:12px;color:#888780;margin-bottom:16px">打开微信 → 扫一扫 → 完成支付</div>
+      <div style="font-size:30px;color:#D85A30;font-weight:500;margin-bottom:16px" id="payAmount">¥0.00</div>
+      <div style="background:#F5F5F5;border-radius:12px;padding:12px;display:inline-block;margin-bottom:12px">
+        <!-- 收款二维码：请把你的微信收款码图片放到本项目目录，然后把 src 改成文件名 -->
+        <img id="wxQrImg" src="wechat-pay.jpg" alt="微信收款码"
+             style="width:180px;height:180px;object-fit:cover;border-radius:8px"
+             onerror="this.parentElement.innerHTML='<div style=&quot;width:180px;height:180px;display:flex;align-items:center;justify-content:center;color:#B4B2A9;font-size:12px&quot;>请设置收款二维码图片</div>'">
+      </div>
+      <div style="font-size:12px;color:#B4B2A9;margin-bottom:16px">请扫码支付以上金额，支付完成后点击按钮</div>
+      <button onclick="confirmPaid()" style="width:100%;background:#07C160;color:#fff;border:none;border-radius:10px;padding:12px;font-size:15px;font-weight:500;cursor:pointer;font-family:inherit;transition:background 0.15s">✓ 我已支付</button>
+      <div style="font-size:11px;color:#B4B2A9;margin-top:8px">支付后商家将尽快为您安排发货</div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+  /* ══════════════════════════════════════════════
+     !! 管理员配置区 !!
+     填写后即可自动推送订单
+  ══════════════════════════════════════════════ */
+
+  // ══ 运费计算配置 ══
+  // 1斤 = 0.5KG
+  const KG_PER_JIN = 0.5;
+
+  // 包装成本配置（按总重量）
+  function calculatePackageCost(totalKg) {
+    if (totalKg <= 2.5) return 10;
+    if (totalKg <= 5.0) return 20;
+    // 超过5KG的包装成本，暂按20元计算，你可调整
+    return 20;
+  }
+
+  // 运费价格表（广州始发，根据图片整理）
+  const SHIPPING_RATES = {
+    // 广州同城
+    '广州': { first: 12, extra: 2, zone: '广州同城' },
+
+    // 广东（除湛江、潮州、汕头外）
+    '深圳': { first: 13, extra: 2, zone: '广东省内' },
+    '珠海': { first: 13, extra: 2, zone: '广东省内' },
+    '佛山': { first: 13, extra: 2, zone: '广东省内' },
+    '韶关': { first: 13, extra: 2, zone: '广东省内' },
+    '肇庆': { first: 13, extra: 2, zone: '广东省内' },
+    '江门': { first: 13, extra: 2, zone: '广东省内' },
+    '茂名': { first: 13, extra: 2, zone: '广东省内' },
+    '惠州': { first: 13, extra: 2, zone: '广东省内' },
+    '梅州': { first: 13, extra: 2, zone: '广东省内' },
+    '汕尾': { first: 13, extra: 2, zone: '广东省内' },
+    '河源': { first: 13, extra: 2, zone: '广东省内' },
+    '阳江': { first: 13, extra: 2, zone: '广东省内' },
+    '清远': { first: 13, extra: 2, zone: '广东省内' },
+    '东莞': { first: 13, extra: 2, zone: '广东省内' },
+    '中山': { first: 13, extra: 2, zone: '广东省内' },
+    '揭阳': { first: 13, extra: 2, zone: '广东省内' },
+    '云浮': { first: 13, extra: 2, zone: '广东省内' },
+
+    // 广东（湛江、潮州、汕头）
+    '湛江': { first: 12, extra: 2, zone: '广东（湛江、潮州、汕头）' },
+    '潮州': { first: 12, extra: 2, zone: '广东（湛江、潮州、汕头）' },
+    '汕头': { first: 12, extra: 2, zone: '广东（湛江、潮州、汕头）' },
+
+    // 福建（宁德、莆田、三明、福州、南平）
+    '福州': { first: 15, extra: 5, zone: '福建（宁德、莆田、三明、福州、南平）' },
+    '莆田': { first: 15, extra: 5, zone: '福建（宁德、莆田、三明、福州、南平）' },
+    '三明': { first: 15, extra: 5, zone: '福建（宁德、莆田、三明、福州、南平）' },
+    '南平': { first: 15, extra: 5, zone: '福建（宁德、莆田、三明、福州、南平）' },
+    '宁德': { first: 15, extra: 5, zone: '福建（宁德、莆田、三明、福州、南平）' },
+
+    // 福建（龙岩、泉州、厦门、漳州）
+    '龙岩': { first: 16, extra: 6, zone: '福建（龙岩、泉州、厦门、漳州）' },
+    '泉州': { first: 16, extra: 6, zone: '福建（龙岩、泉州、厦门、漳州）' },
+    '厦门': { first: 16, extra: 6, zone: '福建（龙岩、泉州、厦门、漳州）' },
+    '漳州': { first: 16, extra: 6, zone: '福建（龙岩、泉州、厦门、漳州）' },
+
+    // 广西（桂林、钦州、百色、贵港、南宁、梧州、河池）
+    '桂林': { first: 16, extra: 6, zone: '广西（桂林、钦州、百色、贵港、南宁、梧州、河池）' },
+    '钦州': { first: 16, extra: 6, zone: '广西（桂林、钦州、百色、贵港、南宁、梧州、河池）' },
+    '百色': { first: 16, extra: 6, zone: '广西（桂林、钦州、百色、贵港、南宁、梧州、河池）' },
+    '贵港': { first: 16, extra: 6, zone: '广西（桂林、钦州、百色、贵港、南宁、梧州、河池）' },
+    '南宁': { first: 16, extra: 6, zone: '广西（桂林、钦州、百色、贵港、南宁、梧州、河池）' },
+    '梧州': { first: 16, extra: 6, zone: '广西（桂林、钦州、百色、贵港、南宁、梧州、河池）' },
+    '河池': { first: 16, extra: 6, zone: '广西（桂林、钦州、百色、贵港、南宁、梧州、河池）' },
+
+    // 广西（贺州、其他）
+    '贺州': { first: 17, extra: 5, zone: '广西（贺州）' },
+    '北海': { first: 16, extra: 6, zone: '广西（桂林、钦州、百色、贵港、南宁、梧州、河池）' },
+    '防城港': { first: 16, extra: 6, zone: '广西（桂林、钦州、百色、贵港、南宁、梧州、河池）' },
+    '玉林': { first: 16, extra: 6, zone: '广西（桂林、钦州、百色、贵港、南宁、梧州、河池）' },
+    '来宾': { first: 16, extra: 6, zone: '广西（桂林、钦州、百色、贵港、南宁、梧州、河池）' },
+    '崇左': { first: 16, extra: 6, zone: '广西（桂林、钦州、百色、贵港、南宁、梧州、河池）' },
+
+    // 湖南、江西、福建、海南（除三沙外）、广西（除贺州、梧州外）
+    '长沙': { first: 19, extra: 8, zone: '湖南、江西、福建、海南（除三沙外）、广西（除贺州、梧州外）' },
+    '株洲': { first: 19, extra: 8, zone: '湖南、江西、福建、海南（除三沙外）、广西（除贺州、梧州外）' },
+    '湘潭': { first: 19, extra: 8, zone: '湖南、江西、福建、海南（除三沙外）、广西（除贺州、梧州外）' },
+    '衡阳': { first: 19, extra: 8, zone: '湖南、江西、福建、海南（除三沙外）、广西（除贺州、梧州外）' },
+    '邵阳': { first: 19, extra: 8, zone: '湖南、江西、福建、海南（除三沙外）、广西（除贺州、梧州外）' },
+    '岳阳': { first: 19, extra: 8, zone: '湖南、江西、福建、海南（除三沙外）、广西（除贺州、梧州外）' },
+    '常德': { first: 19, extra: 8, zone: '湖南、江西、福建、海南（除三沙外）、广西（除贺州、梧州外）' },
+    '张家界': { first: 19, extra: 8, zone: '湖南、江西、福建、海南（除三沙外）、广西（除贺州、梧州外）' },
+    '益阳': { first: 19, extra: 8, zone: '湖南、江西、福建、海南（除三沙外）、广西（除贺州、梧州外）' },
+    '郴州': { first: 19, extra: 8, zone: '湖南、江西、福建、海南（除三沙外）、广西（除贺州、梧州外）' },
+    '永州': { first: 19, extra: 8, zone: '湖南、江西、福建、海南（除三沙外）、广西（除贺州、梧州外）' },
+    '怀化': { first: 19, extra: 8, zone: '湖南、江西、福建、海南（除三沙外）、广西（除贺州、梧州外）' },
+    '娄底': { first: 19, extra: 8, zone: '湖南、江西、福建、海南（除三沙外）、广西（除贺州、梧州外）' },
+    '湘西': { first: 19, extra: 8, zone: '湖南、江西、福建、海南（除三沙外）、广西（除贺州、梧州外）' },
+    '南昌': { first: 19, extra: 8, zone: '湖南、江西、福建、海南（除三沙外）、广西（除贺州、梧州外）' },
+    '景德镇': { first: 19, extra: 8, zone: '湖南、江西、福建、海南（除三沙外）、广西（除贺州、梧州外）' },
+    '萍乡': { first: 19, extra: 8, zone: '湖南、江西、福建、海南（除三沙外）、广西（除贺州、梧州外）' },
+    '九江': { first: 19, extra: 8, zone: '湖南、江西、福建、海南（除三沙外）、广西（除贺州、梧州外）' },
+    '新余': { first: 19, extra: 8, zone: '湖南、江西、福建、海南（除三沙外）、广西（除贺州、梧州外）' },
+    '鹰潭': { first: 19, extra: 8, zone: '湖南、江西、福建、海南（除三沙外）、广西（除贺州、梧州外）' },
+    '赣州': { first: 19, extra: 8, zone: '湖南、江西、福建、海南（除三沙外）、广西（除贺州、梧州外）' },
+    '吉安': { first: 19, extra: 8, zone: '湖南、江西、福建、海南（除三沙外）、广西（除贺州、梧州外）' },
+    '宜春': { first: 19, extra: 8, zone: '湖南、江西、福建、海南（除三沙外）、广西（除贺州、梧州外）' },
+    '抚州': { first: 19, extra: 8, zone: '湖南、江西、福建、海南（除三沙外）、广西（除贺州、梧州外）' },
+    '上饶': { first: 19, extra: 8, zone: '湖南、江西、福建、海南（除三沙外）、广西（除贺州、梧州外）' },
+    '海口': { first: 19, extra: 8, zone: '湖南、江西、福建、海南（除三沙外）、广西（除贺州、梧州外）' },
+    '三亚': { first: 19, extra: 8, zone: '湖南、江西、福建、海南（除三沙外）、广西（除贺州、梧州外）' },
+    '儋州': { first: 19, extra: 8, zone: '湖南、江西、福建、海南（除三沙外）、广西（除贺州、梧州外）' },
+
+    // 四川、贵州、河南、云南、江苏、湖北、浙江、上海、重庆、安徽
+    '成都': { first: 19, extra: 10, zone: '四川、贵州、河南、云南、江苏、湖北、浙江、上海、重庆、安徽' },
+    '贵阳': { first: 19, extra: 10, zone: '四川、贵州、河南、云南、江苏、湖北、浙江、上海、重庆、安徽' },
+    '郑州': { first: 19, extra: 10, zone: '四川、贵州、河南、云南、江苏、湖北、浙江、上海、重庆、安徽' },
+    '昆明': { first: 19, extra: 10, zone: '四川、贵州、河南、云南、江苏、湖北、浙江、上海、重庆、安徽' },
+    '南京': { first: 19, extra: 10, zone: '四川、贵州、河南、云南、江苏、湖北、浙江、上海、重庆、安徽' },
+    '武汉': { first: 19, extra: 10, zone: '四川、贵州、河南、云南、江苏、湖北、浙江、上海、重庆、安徽' },
+    '杭州': { first: 19, extra: 10, zone: '四川、贵州、河南、云南、江苏、湖北、浙江、上海、重庆、安徽' },
+    '上海': { first: 19, extra: 10, zone: '四川、贵州、河南、云南、江苏、湖北、浙江、上海、重庆、安徽' },
+    '重庆': { first: 19, extra: 10, zone: '四川、贵州、河南、云南、江苏、湖北、浙江、上海、重庆、安徽' },
+    '合肥': { first: 19, extra: 10, zone: '四川、贵州、河南、云南、江苏、湖北、浙江、上海、重庆、安徽' },
+
+    // 陕西、河北、山东、山西
+    '西安': { first: 20, extra: 11, zone: '陕西、河北、山东、山西' },
+    '石家庄': { first: 20, extra: 11, zone: '陕西、河北、山东、山西' },
+    '济南': { first: 20, extra: 11, zone: '陕西、河北、山东、山西' },
+    '太原': { first: 20, extra: 11, zone: '陕西、河北、山东、山西' },
+
+    // 辽宁、宁夏、天津、甘肃、北京、内蒙（除呼伦贝尔、兴安盟外）、青海（玉树州外）
+    '沈阳': { first: 21, extra: 12, zone: '辽宁、宁夏、天津、甘肃、北京、内蒙（除呼伦贝尔、兴安盟外）、青海（玉树州外）' },
+    '银川': { first: 21, extra: 12, zone: '辽宁、宁夏、天津、甘肃、北京、内蒙（除呼伦贝尔、兴安盟外）、青海（玉树州外）' },
+    '天津': { first: 21, extra: 12, zone: '辽宁、宁夏、天津、甘肃、北京、内蒙（除呼伦贝尔、兴安盟外）、青海（玉树州外）' },
+    '兰州': { first: 21, extra: 12, zone: '辽宁、宁夏、天津、甘肃、北京、内蒙（除呼伦贝尔、兴安盟外）、青海（玉树州外）' },
+    '北京': { first: 21, extra: 12, zone: '辽宁、宁夏、天津、甘肃、北京、内蒙（除呼伦贝尔、兴安盟外）、青海（玉树州外）' },
+    '西宁': { first: 21, extra: 12, zone: '辽宁、宁夏、天津、甘肃、北京、内蒙（除呼伦贝尔、兴安盟外）、青海（玉树州外）' },
+
+    // 青海（玉树州）
+    '玉树': { first: 21, extra: 14, zone: '青海（玉树州）' },
+
+    // 吉林、黑龙江、内蒙（呼伦贝尔、兴安盟）
+    '长春': { first: 22, extra: 13, zone: '吉林、黑龙江、内蒙（呼伦贝尔、兴安盟）' },
+    '哈尔滨': { first: 22, extra: 13, zone: '吉林、黑龙江、内蒙（呼伦贝尔、兴安盟）' },
+    '呼伦贝尔': { first: 22, extra: 13, zone: '吉林、黑龙江、内蒙（呼伦贝尔、兴安盟）' },
+    '兴安盟': { first: 22, extra: 13, zone: '吉林、黑龙江、内蒙（呼伦贝尔、兴安盟）' },
+
+    // 新疆、西藏
+    '乌鲁木齐': { first: 26, extra: 20, zone: '新疆、西藏' },
+    '拉萨': { first: 26, extra: 20, zone: '新疆、西藏' },
+
+    // 海南（三沙）
+    '三沙': { first: 29, extra: 21, zone: '海南（三沙）' }
+  };
+
+  // 根据地址识别城市并返回运费配置
+  function getShippingRate(address) {
+    if (!address) return null;
+    // 尝试匹配城市名
+    for (const city in SHIPPING_RATES) {
+      if (address.includes(city)) {
+        return { city, ...SHIPPING_RATES[city] };
+      }
+    }
+    return null;
+  }
+
+  // 计算运费
+  function calculateShipping(address, totalJin) {
+    const rate = getShippingRate(address);
+    if (!rate) return { shipping: 0, rate: null, error: '无法识别地址城市，将不计算运费' };
+
+    const totalKg = totalJin * KG_PER_JIN;
+    let shipping = rate.first;
+    if (totalKg > 1) {
+      shipping += Math.ceil(totalKg - 1) * rate.extra;
+    }
+    return { shipping, rate, totalKg };
+  }
+
+  // 飞书多维表格 Webhook（自动化 HTTP 触发器）
+  // 在飞书多维表格 → 自动化 → 新建 → 触发器选「Webhook」→ 复制 URL 填入
+  const FEISHU_WEBHOOK = 'https://bytedance.larkoffice.com/base/automation/webhook/event/IRWoatfk6wRNCLhVsrNcNvNmnUb';
+
+  // CORS 代理：飞书 Webhook 从浏览器直接调用会被跨域策略拦截
+  // 默认使用 cors.eu.org（免费），也可替换为自己的代理地址
+  // 留空则使用内置代理，设置为 'none' 可跳过代理直接请求
+  const CORS_PROXY = '';  // 如：'https://your-proxy.com/' 或 'none'
+
+  /* ══════════════════════════════════════════════ */
+
+  // ══ 价格动态加载（与 admin 页面保持一致） ══
+  // 方案 A（推荐）：GitHub Gist 免费 JSON API
+  // 1. 访问 https://gist.github.com 创建 Gist
+  // 2. 文件名：lychee-prices.json，内容：{"guiwei":49,"nuomici":68,"xianjinfeng":58}
+  // 3. 创建后复制「Raw」链接，填入下面 GIST_RAW_URL
+  const GIST_RAW_URL = '';  // ← 填你的 Gist Raw URL（与 admin 页面保持一致）
+  // 方案 B：Cloudflare Workers（免费，无需信用卡）
+  const CF_WORKER_URL = '';  // ← 填你的 Worker URL（与 admin 页面保持一致）
+
+  function getPriceUrl() {
+    return GIST_RAW_URL || CF_WORKER_URL || '';
+  }
+
+  let prices = { guiwei: 49, nuomici: 68, xianjinfeng: 58 }; // 默认值
+
+  async function loadPrices() {
+    const url = getPriceUrl();
+    if (!url) {
+      // 未配置云端地址：尝试从 localStorage 读取（admin 页面可能保存过）
+      try {
+        const local = JSON.parse(localStorage.getItem('lychee_prices'));
+        if (local && local.guiwei !== undefined) {
+          prices.guiwei = local.guiwei;
+          prices.nuomici = local.nuomici;
+          prices.xianjinfeng = local.xianjinfeng;
+          updateAllPrices();
+          console.log('价格从本地加载（未配置云端）：', prices);
+        }
+      } catch(e) {}
+      return;
+    }
+    try {
+      const res = await fetch(url + (url.indexOf('?') >= 0 ? '&' : '?') + '_t=' + Date.now());
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.guiwei !== undefined) {
+          prices.guiwei = data.guiwei;
+          prices.nuomici = data.nuomici;
+          prices.xianjinfeng = data.xianjinfeng;
+          updateAllPrices();
+          console.log('价格已从云端加载：', prices);
+        }
+      }
+    } catch(e) { console.warn('云端价格加载失败，使用默认价格', e); }
+  }
+
+  function updateAllPrices() {
+    // 更新三个品种的价格显示和小计
+    updateProductPrice('guiwei', prices.guiwei);
+    updateProductPrice('nuomici', prices.nuomici);
+    updateProductPrice('xianjinfeng', prices.xianjinfeng);
+    // 刷新小计
+    ['guiwei','nuomici','xianjinfeng'].forEach(id => updateSubtotal(id));
+    // 如果购物车有内容，刷新购物车显示
+    if (Object.keys(cart).length) renderCart();
+  }
+
+  function updateProductPrice(id, price) {
+    const card = document.getElementById('qty-' + id).closest('.product-card');
+    // 更新价格数字
+    const priceMain = card.querySelector('.price-main');
+    if (priceMain) priceMain.textContent = '¥' + price;
+    // 更新加入购物车按钮的 onclick（第三个参数是 price）
+    const addBtn = card.querySelector('.add-cart-btn');
+    if (addBtn) {
+      const nameMap = { guiwei:'桂味', nuomici:'糯米糍', xianjinfeng:'仙进奉' };
+      addBtn.setAttribute('onclick',
+        `addToCart('${id}','${nameMap[id]}',${price},'${id}')`);
+    }
+  }
+
+  const cart = {};
+
+  // ── Profile ──
+  const PROFILE_KEY = 'lychee_receiver';
+
+  function loadProfile() {
+    try {
+      return JSON.parse(localStorage.getItem(PROFILE_KEY)) || {};
+    } catch { return {}; }
+  }
+
+  function saveProfile() {
+    const name = document.getElementById('fieldName').value.trim();
+    const phone = document.getElementById('fieldPhone').value.trim();
+    const addr1 = document.getElementById('fieldAddr1').value.trim();
+    const addr2 = document.getElementById('fieldAddr2').value.trim();
+    let valid = true;
+    if (!name) { showFieldError('errName', 'fieldName'); valid = false; }
+    else { hideFieldError('errName', 'fieldName'); }
+    if (!/^1[3-9]\d{9}$/.test(phone)) { showFieldError('errPhone', 'fieldPhone'); valid = false; }
+    else { hideFieldError('errPhone', 'fieldPhone'); }
+    if (!addr1 || !addr2) { showFieldError('errAddr', addr1 ? 'fieldAddr2' : 'fieldAddr1'); valid = false; }
+    else { hideFieldError('errAddr', 'fieldAddr1'); }
+    if (!valid) return;
+    const profile = {
+      name, phone, addr1, addr2,
+      remark: document.getElementById('fieldRemark').value.trim()
+    };
+    localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+    document.getElementById('profileSavedTip').classList.add('show');
+    updateProfileBtn(profile);
+    setTimeout(() => {
+      document.getElementById('profileSavedTip').classList.remove('show');
+      closeProfile();
+    }, 1200);
+  }
+
+  function showFieldError(errId, inputId) {
+    document.getElementById(errId).classList.add('show');
+    document.getElementById(inputId).classList.add('error');
+  }
+  function hideFieldError(errId, inputId) {
+    document.getElementById(errId).classList.remove('show');
+    document.getElementById(inputId).classList.remove('error');
+  }
+
+  function updateProfileBtn(profile) {
+    const btn = document.getElementById('profileBtn');
+    const lbl = document.getElementById('profileBtnLabel');
+    if (profile && profile.name) {
+      lbl.textContent = profile.name;
+      btn.classList.add('filled');
+    } else {
+      lbl.textContent = '收件信息';
+      btn.classList.remove('filled');
+    }
+  }
+
+  function openProfile() {
+    const p = loadProfile();
+    if (p.name) document.getElementById('fieldName').value = p.name;
+    if (p.phone) document.getElementById('fieldPhone').value = p.phone;
+    if (p.addr1) document.getElementById('fieldAddr1').value = p.addr1;
+    if (p.addr2) document.getElementById('fieldAddr2').value = p.addr2;
+    if (p.remark) document.getElementById('fieldRemark').value = p.remark;
+    document.getElementById('profileModal').classList.add('open');
+  }
+  function closeProfile() {
+    document.getElementById('profileModal').classList.remove('open');
+  }
+
+  // ── Cart ──
+  function getQty(id) {
+    const v = parseInt(document.getElementById('qty-' + id).value);
+    return isNaN(v) || v < 1 ? 1 : v;
+  }
+  function updateSubtotal(id) {
+    const sub = (prices[id] * getQty(id)).toFixed(2);
+    document.getElementById('subtotal-' + id).textContent = '小计：¥' + sub;
+  }
+  function changeQty(id, delta) {
+    const input = document.getElementById('qty-' + id);
+    const min = 5;
+    input.value = Math.max(min, (parseInt(input.value) || min) + delta);
+    clearPresets(id); updateSubtotal(id);
+  }
+  function onQtyInput(id) { clearPresets(id); updateSubtotal(id); }
+  function clearPresets(id) {
+    document.getElementById('qty-' + id).closest('.product-card')
+      .querySelectorAll('.qty-preset-btn').forEach(b => b.classList.remove('active'));
+  }
+  function selectPreset(btn, id, qty) {
+    clearPresets(id);
+    btn.classList.add('active');
+    document.getElementById('qty-' + id).value = qty;
+    updateSubtotal(id);
+  }
+
+  const THUMB_SVG = {
+    guiwei: `<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="22" r="14" fill="#D85A30"/><circle cx="20" cy="22" r="14" fill="url(#t1)" opacity="0.5"/><circle cx="28" cy="15" r="9" fill="#993C1D"/><defs><radialGradient id="t1" cx="38%" cy="33%"><stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#993C1D"/></radialGradient></defs></svg>`,
+    nuomici: `<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><circle cx="19" cy="23" r="15" fill="#BA7517"/><circle cx="19" cy="23" r="15" fill="url(#t2)" opacity="0.5"/><circle cx="29" cy="14" r="9" fill="#993C1D"/><defs><radialGradient id="t2" cx="38%" cy="33%"><stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#633806"/></radialGradient></defs></svg>`,
+    xianjinfeng: `<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><ellipse cx="19" cy="23" rx="14" ry="16" fill="#D85A30"/><ellipse cx="19" cy="23" rx="14" ry="16" fill="url(#t3)" opacity="0.5"/><circle cx="29" cy="14" r="9" fill="#BA7517"/><defs><radialGradient id="t3" cx="38%" cy="33%"><stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#712B13"/></radialGradient></defs></svg>`
+  };
+
+  function addToCart(id, name, price, thumbKey) {
+    const qty = getQty(id);
+    if (cart[id]) cart[id].qty += qty;
+    else cart[id] = { name, price, qty, thumb: THUMB_SVG[thumbKey] };
+    updateCartBadge();
+    showToast('已加入 ' + qty + ' 斤' + name);
+    renderCart();
+  }
+  function removeFromCart(id) {
+    delete cart[id]; updateCartBadge(); renderCart();
+  }
+  function updateCartBadge() {
+    const total = Object.values(cart).reduce((s, v) => s + v.qty, 0);
+    const badge = document.getElementById('cartBadge');
+    badge.style.display = total > 0 ? 'flex' : 'none';
+    badge.textContent = total;
+  }
+  function renderCart() {
+    const body = document.getElementById('cartBody');
+    const keys = Object.keys(cart);
+    if (!keys.length) {
+      body.innerHTML = '<div class="cart-empty">购物车还是空的，快去选购吧～</div>';
+      document.getElementById('cartTotal').textContent = '¥0.00';
+      return;
+    }
+    const profile = loadProfile();
+    let html = '';
+    if (profile.name) {
+      html += `<div class="receiver-info show">收件人：<strong>${profile.name}</strong> &nbsp; ${profile.phone} &nbsp; ${profile.addr1} ${profile.addr2}</div>`;
+    } else {
+      html += `<div class="no-receiver-tip">尚未填写收件信息，<a href="#" onclick="closeCart();openProfile();return false">点此填写</a>（结算时必填）</div>`;
+    }
+    let total = 0;
+    let totalJin = 0;
+    keys.forEach(id => {
+      const item = cart[id];
+      const sub = item.price * item.qty;
+      total += sub;
+      totalJin += item.qty;
+      html += `<div class="cart-item">
+        <div class="cart-item-thumb">${item.thumb}</div>
+        <div class="cart-item-info">
+          <div class="cart-item-name">${item.name}</div>
+          <div class="cart-item-meta">¥${item.price}/斤 × ${item.qty}斤</div>
+        </div>
+        <div class="cart-item-price">¥${sub.toFixed(2)}</div>
+        <button class="cart-item-remove" onclick="removeFromCart('${id}')">✕</button>
+      </div>`;
+    });
+
+    // 计算运费
+    let shippingHtml = '';
+    let shipping = 0;
+    if (profile.addr1) {
+      const addr = profile.addr1 + ' ' + (profile.addr2 || '');
+      const result = calculateShipping(addr, totalJin);
+      if (result.rate) {
+        shipping = result.shipping;
+        const totalKg = (totalJin * KG_PER_JIN).toFixed(1);
+        shippingHtml = `<div class="cart-item" style="background:#F5F5F0;font-size:12px;color:#5F5E5A">
+          <div style="flex:1">运费（${result.rate.zone}，重量${totalKg}KG）</div>
+          <div style="font-weight:500;color:#D85A30">¥${shipping.toFixed(2)}</div>
+        </div>`;
+      } else if (result.error) {
+        shippingHtml = `<div class="cart-item" style="background:#FFF0F0;font-size:12px;color:#E24B4A">
+          <div style="flex:1">⚠️ ${result.error}</div>
+          <div style="font-weight:500;color:#E24B4A">¥0.00</div>
+        </div>`;
+      }
+    } else {
+      shippingHtml = `<div class="cart-item" style="background:#FAEEDA;font-size:12px;color:#854F0B">
+        <div style="flex:1">📍 请先填写完整收件地址以计算运费</div>
+      </div>`;
+    }
+
+    html += shippingHtml;
+
+    // 计算包装成本
+    const totalKg = totalJin * KG_PER_JIN;
+    const packageCost = calculatePackageCost(totalKg);
+    if (packageCost > 0) {
+      html += `<div class="cart-item" style="background:#F0F5F0;font-size:12px;color:#5F5E5A">
+        <div style="flex:1">包装费（重量${totalKg.toFixed(1)}KG）</div>
+        <div style="font-weight:500;color:#3B6D11">¥${packageCost.toFixed(2)}</div>
+      </div>`;
+    }
+
+    body.innerHTML = html;
+
+    const grandTotal = total + shipping + packageCost;
+    document.getElementById('cartTotal').textContent = '¥' + grandTotal.toFixed(2);
+    // 保存运费和包装费到全局变量，供订单提交时使用
+    window.currentShipping = shipping;
+    window.currentPackageCost = packageCost;
+    window.currentTotalJin = totalJin;
+  }
+  function openCart() { renderCart(); document.getElementById('cartModal').classList.add('open'); }
+  function closeCart() { document.getElementById('cartModal').classList.remove('open'); }
+  document.getElementById('cartModal').addEventListener('click', function(e) { if (e.target === this) closeCart(); });
+
+  // ── Order confirm ──
+  function openOrderConfirm() {
+    const keys = Object.keys(cart);
+    if (!keys.length) { showToast('购物车是空的', true); return; }
+    const profile = loadProfile();
+    if (!profile.name) {
+      showToast('请先填写收件人信息', true);
+      closeCart();
+      setTimeout(() => openProfile(), 300);
+      return;
+    }
+    closeCart();
+    let total = 0;
+    let totalJin = 0;
+    let itemsHtml = '';
+    keys.forEach(id => {
+      const item = cart[id];
+      const sub = item.price * item.qty;
+      total += sub;
+      totalJin += item.qty;
+      itemsHtml += `<div class="order-detail-row"><span>${item.name}</span><strong>¥${item.price}/斤 × ${item.qty}斤 = ¥${sub.toFixed(2)}</strong></div>`;
+    });
+
+    // 计算运费
+    const addr = profile.addr1 + ' ' + (profile.addr2 || '');
+    const shippingResult = calculateShipping(addr, totalJin);
+    let shipping = 0;
+    let shippingHtml = '';
+    if (shippingResult.rate) {
+      shipping = shippingResult.shipping;
+      const totalKg = (totalJin * KG_PER_JIN).toFixed(1);
+      shippingHtml = `<div class="order-detail-row"><span>运费（${shippingResult.rate.zone}）</span><strong>¥${shipping.toFixed(2)}</strong></div>`;
+    } else {
+      shippingHtml = `<div class="order-detail-row" style="color:#E24B4A"><span>运费</span><strong>无法计算（${shippingResult.error}）</strong></div>`;
+    }
+
+    // 计算包装成本
+    const totalKg = totalJin * KG_PER_JIN;
+    const packageCost = calculatePackageCost(totalKg);
+    let packageHtml = '';
+    if (packageCost > 0) {
+      packageHtml = `<div class="order-detail-row"><span>包装费</span><strong>¥${packageCost.toFixed(2)}</strong></div>`;
+    }
+
+    const now = new Date();
+    const orderNo = 'LZ' + now.getFullYear().toString().slice(2) + String(now.getMonth()+1).padStart(2,'0') + String(now.getDate()).padStart(2,'0') + String(now.getHours()).padStart(2,'0') + String(now.getMinutes()).padStart(2,'0') + String(now.getSeconds()).padStart(2,'0');
+    const grandTotal = total + shipping + packageCost;
+    document.getElementById('orderBody').innerHTML = `
+      <div class="order-detail">
+        <div class="order-detail-row"><span>收件人</span><strong>${profile.name} · ${profile.phone}</strong></div>
+        <div class="order-detail-row"><span>地址</span><strong>${profile.addr1} ${profile.addr2}</strong></div>
+        ${profile.remark ? `<div class="order-detail-row"><span>备注</span><strong>${profile.remark}</strong></div>` : ''}
+      </div>
+      <div class="order-detail">
+        ${itemsHtml}
+        ${shippingHtml}
+        ${packageHtml}
+        <div class="order-total-row"><span>订单合计</span><span>¥${grandTotal.toFixed(2)}</span></div>
+      </div>
+      <div class="wxwork-tip">&#128172; 订单提交后将自动同步至飞书表格并通知商家，商家确认后会联系您付款及安排发货。</div>
+    `;
+    document.getElementById('submitOrderBtn').disabled = false;
+    document.getElementById('submittingTip').classList.remove('show');
+    document.getElementById('orderModal').classList.add('open');
+    document.getElementById('orderModal').dataset.orderno = orderNo;
+    document.getElementById('orderModal').dataset.total = grandTotal.toFixed(2);
+    document.getElementById('orderModal').dataset.shipping = shipping.toFixed(2);
+    document.getElementById('orderModal').dataset.package = packageCost.toFixed(2);
+  }
+  function closeOrderModal() { document.getElementById('orderModal').classList.remove('open'); }
+  document.getElementById('orderModal').addEventListener('click', function(e) { if (e.target === this) closeOrderModal(); });
+
+  // ── CORS 代理发送（解决浏览器跨域限制）──
+  async function sendToFeishu(payload) {
+    const needProxy = location.protocol === 'http:' || location.hostname !== 'bytedance.larkoffice.com';
+    let url, opts;
+
+    if (!needProxy || CORS_PROXY === 'none') {
+      // 同域或用户指定不设代理 → 直接请求
+      url = FEISHU_WEBHOOK;
+      opts = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      };
+    } else if (CORS_PROXY) {
+      // 使用自定义代理
+      url = CORS_PROXY + encodeURIComponent(FEISHU_WEBHOOK);
+      opts = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      };
+    } else {
+      // 默认 cors.eu.org 公共代理（不需要 API key，支持 POST）
+      url = 'https://cors.eu.org/' + FEISHU_WEBHOOK;
+      opts = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Origin': location.origin || 'https://example.com'
+        },
+        body: JSON.stringify(payload)
+      };
+    }
+
+    // 先尝试正常请求（带 CORS 代理）
+    try {
+      const res = await fetch(url, opts);
+      const text = await res.text();
+      console.log('[飞书 Webhook] 响应：', res.status, text);
+      return { ok: res.ok, status: res.status, text };
+    } catch(e) {
+      console.warn('[飞书 Webhook] 代理请求失败，尝试 no-cors 模式：', e.message);
+      // 降级：no-cors 模式（请求会发出去，但无法读取响应）
+      try {
+        await fetch(FEISHU_WEBHOOK, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        console.log('[飞书 Webhook] no-cors 模式请求已发出（无法确认响应）');
+        return { ok: true, noCors: true };
+      } catch(e2) {
+        console.error('[飞书 Webhook] 所有发送方式均失败：', e2);
+        return { ok: false, error: e2.message };
+      }
+    }
+  }
+
+  // ── Submit order ──
+  async function submitOrder() {
+    const btn = document.getElementById('submitOrderBtn');
+    const tip = document.getElementById('submittingTip');
+    btn.disabled = true;
+    tip.classList.add('show');
+
+    const profile = loadProfile();
+    const orderNo = document.getElementById('orderModal').dataset.orderno;
+    const total = parseFloat(document.getElementById('orderModal').dataset.total);
+    const shipping = parseFloat(document.getElementById('orderModal').dataset.shipping || '0');
+    const packageCost = parseFloat(document.getElementById('orderModal').dataset.package || '0');
+    const now = new Date();
+    const timeStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+
+    const itemLines = Object.values(cart).map(i => `${i.name} ${i.qty}斤 ×¥${i.price} = ¥${(i.price*i.qty).toFixed(2)}`).join('\n> ');
+
+    // 1. 微信通知（Server酱）
+    let wxOk = false;
+    if (SERVERCHAN_SENDKEY) {
+      try {
+        const subtotal = (total - shipping - packageCost).toFixed(2);
+        const wxMsg = `订单号：${orderNo}\n下单时间：${timeStr}\n收件人：${profile.name}\n手机：${profile.phone}\n地址：${profile.addr1} ${profile.addr2}\n${profile.remark ? '备注：' + profile.remark + '\n' : ''}商品：${Object.values(cart).map(i => i.name + '×' + i.qty + '斤').join('、')}\n商品合计：¥${subtotal}\n运费：¥${shipping.toFixed(2)}\n包装费：¥${packageCost.toFixed(2)}\n订单合计：¥${total.toFixed(2)}`;
+        const wxUrl = `https://sctapi.ftqq.com/${SERVERCHAN_SENDKEY}.send`;
+        const wxRes = await fetch(wxUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({ title: `新荔枝订单 ${orderNo}`, desp: wxMsg })
+        });
+        const wxData = await wxRes.json();
+        if (wxData.code === 0) wxOk = true;
+        else console.warn('微信通知失败', wxData);
+      } catch(e) { console.warn('微信通知异常', e); }
+    } else {
+      console.log('[Server酱未配置，跳过微信通知]');
+    }
+
+    // 2. 飞书多维表格 Webhook（HTTP 触发器）
+    if (FEISHU_WEBHOOK) {
+      const payload = {
+        orderNo,
+        time: timeStr,
+        name: profile.name,
+        phone: profile.phone,
+        address: profile.addr1 + ' ' + profile.addr2,
+        remark: profile.remark || '',
+        items: Object.values(cart).map(i => `${i.name}×${i.qty}斤`).join('、'),
+        subtotal: parseFloat((total - shipping - packageCost).toFixed(2)),
+        shipping,
+        package: packageCost,
+        total
+      };
+      const result = await sendToFeishu(payload);
+      if (!result.ok) {
+        console.warn('飞书 Webhook 发送失败，请检查 CORS 代理设置');
+      }
+    }
+
+    // 3. 本地 localStorage 备份
+    try {
+      const history = JSON.parse(localStorage.getItem('lychee_orders') || '[]');
+      history.push({
+        orderNo, time: timeStr,
+        receiver: { name: profile.name, phone: profile.phone, addr: profile.addr1+' '+profile.addr2, remark: profile.remark },
+        items: Object.values(cart).map(i => ({ name: i.name, qty: i.qty, price: i.price })),
+        subtotal: parseFloat((total - shipping - packageCost).toFixed(2)),
+        shipping,
+        package: packageCost,
+        total
+      });
+      localStorage.setItem('lychee_orders', JSON.stringify(history));
+    } catch(e) {}
+
+    // 清空购物车
+    Object.keys(cart).forEach(k => delete cart[k]);
+    updateCartBadge();
+    renderCart();
+    closeOrderModal();
+    tip.classList.remove('show');
+    btn.disabled = false;
+    showToast('订单已提交！合计 ¥' + total.toFixed(2) + '（含运费 ¥' + shipping.toFixed(2) + '，包装费 ¥' + packageCost.toFixed(2) + '），请完成支付');
+    // 弹出微信支付窗口
+    showPayModal(total);
+  }
+
+  // ── 微信支付弹窗 ──
+  function showPayModal(totalStr) {
+    document.getElementById('payAmount').textContent = '¥' + parseFloat(totalStr).toFixed(2);
+    document.getElementById('payModal').classList.add('open');
+  }
+  function closePayModal() {
+    document.getElementById('payModal').classList.remove('open');
+  }
+  function confirmPaid() {
+    closePayModal();
+    showToast('支付确认已提交，商家确认收款后会尽快安排发货');
+  }
+  // 点击背景关闭
+  document.addEventListener('click', function(e) {
+    if (e.target && e.target.id === 'payModal') closePayModal();
+  });
+
+  // ── Toast ──
+  function showToast(msg, isError) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast' + (isError ? ' error-toast' : '') + ' show';
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  // ── Init ──
+  (function init() {
+    loadPrices();
+    const p = loadProfile();
+    updateProfileBtn(p);
+    const hasFeishu = !!FEISHU_WEBHOOK;
+    if (hasFeishu) {
+      document.getElementById('configNotice').style.display = 'none';
+    }
+  })();
+</script>
+</body>
+</html>
